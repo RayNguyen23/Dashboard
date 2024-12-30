@@ -18,10 +18,7 @@ export default function Home() {
       return;
     }
 
-    if (
-      (Username === "tunt89172@admin" && Password === "Admin89172#") ||
-      (Username === "datnt1209@admin" && Password === "Dat1207#")
-    ) {
+    if (Username === "tunt89172@admin" && Password === "Admin89172#") {
       setFailedAttempts(0);
       alert("Login successful!");
       Cookies.set("IsLogin", "true", { expires: 7, path: "/" });
