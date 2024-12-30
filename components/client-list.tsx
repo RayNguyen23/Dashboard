@@ -53,7 +53,6 @@ export default function ClientsPage() {
   if (error) {
     return (
       <div className="container py-6">
-        <h1 className="mb-8 text-3xl font-bold">Clients</h1>
         <div className="rounded-md bg-red-50 p-4">
           <p className="text-sm text-red-800">{error}</p>
         </div>

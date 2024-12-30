@@ -1,9 +1,21 @@
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, DollarSign, Users, Building } from "lucide-react";
 import { RevenueChart } from "@/components/revenue-chart";
 import { ClientAcquisitionChart } from "@/components/client-acquisition-chart";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function DashboardHome() {
+  const router = useRouter();
+  useEffect(() => {
+    const getCookie = Cookies.get("IsLogin");
+    if (getCookie != "true") {
+      router.push("/");
+    }
+  }, [router]);
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard Overview</h1>
