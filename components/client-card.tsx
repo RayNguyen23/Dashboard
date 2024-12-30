@@ -1,129 +1,118 @@
-"use client";
-
+import { Clock, Globe, Mail, MapPin, Phone, Star } from "lucide-react";
+import Link from "next/link";
 import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Phone, Mail, Globe, MapPin, Star } from "lucide-react";
 
 interface ClientCardProps {
-  client: {
-    id: string;
-    Name: string;
-    Categories: string | null; // Allow null or undefined for categories
-    TimeZone: string;
-    Phones: string | null; // Allow null or undefined for phones
-    AverageRating: string;
-    GoogleMapsURL: string;
-    Website: string;
-    FullAddress: string;
-    FeaturedImage: string;
-  };
+  name: string;
+  categories: string[];
+  phone: string;
+  email?: string;
+  timeZone: string;
+  rating: number;
+  website?: string;
+  address?: string;
+  image?: string;
 }
 
-export function ClientCard({ client }: ClientCardProps) {
-  // Handle phone call by splitting the string into individual phone numbers
-  const handlePhoneCall = (phone: string) => {
-    window.location.href = `tel:${phone}`;
-  };
-
-  // Handle sending email (assuming a basic format for the email address)
-  const handleSendEmail = () => {
-    window.location.href = `mailto:contact@${client.Website}`;
-  };
-
+export function ClientCard({
+  name,
+  categories,
+  phone,
+  email,
+  timeZone,
+  rating,
+  website,
+  address,
+  image,
+}: ClientCardProps) {
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="truncate text-xl md:text-2xl">
-          {client.Name}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        <div className="aspect-w-16 aspect-h-9 relative overflow-hidden rounded-md">
-          <Image
-            src={client.FeaturedImage}
-            alt={client.Name}
-            fill
-            style={{ objectFit: "cover" }}
-          />
+    <div className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md h-full">
+      <div className="relative">
+        <div className="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-sm backdrop-blur-sm">
+          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+          <span>{rating.toFixed(1)}</span>
         </div>
-        <div className="sm:col-span-1 md:col-span-2 lg:col-span-1">
-          <div className="grid gap-4">
-            <div>
-              <p className="text-sm font-medium">Categories</p>
-              <p className="text-sm text-gray-500">
-                {client.Categories
-                  ? client.Categories.split(",").join(", ")
-                  : "N/A"}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm font-medium">Time Zone</p>
-              <p className="text-sm text-gray-500">{client.TimeZone}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium">Average Rating</p>
-              <p className="flex items-center text-sm text-gray-500">
-                <Star className="mr-1 h-4 w-4 text-yellow-400" />
-                {client.AverageRating}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm font-medium">Website</p>
-              <a
-                href={client.Website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center text-sm text-blue-500 hover:underline"
+        {image ? (
+          <div className="aspect-[2/1] overflow-hidden">
+            <Image
+              src={image}
+              alt={name}
+              className="h-full w-full object-cover transition-transform hover:scale-105"
+            />
+          </div>
+        ) : (
+          <div className="aspect-[2/1] bg-gray-100" />
+        )}
+      </div>
+      <div className="flex flex-col flex-grow p-4 space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold">{name}</h3>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <span
+                key={category}
+                className="inline-block rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
               >
-                <Globe className="mr-1 h-4 w-4" />
-                Visit Site
-              </a>
-            </div>
-            <div>
-              <p className="text-sm font-medium">Address</p>
-              <a
-                href={client.GoogleMapsURL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center text-sm text-blue-500 hover:underline"
-              >
-                <MapPin className="mr-1 h-4 w-4" />
-                <span className="truncate">{client.FullAddress}</span>
-              </a>
-            </div>
+                {category}
+              </span>
+            ))}
           </div>
         </div>
+        <hr className="border-gray-200" />
+        <div className="space-y-2 text-sm flex-grow">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-gray-400" />
+            <span>{timeZone}</span>
+          </div>
+          {phone.split(", ").map((elm) => {
+            if (elm !== "") {
+              return (
+                <div key={elm} className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  <Link href={`tel:${elm}`} className="hover:underline">
+                    {elm}
+                  </Link>
+                </div>
+              );
+            }
+          })}
 
-        <div className="sm:col-span-1 md:col-span-2 lg:col-span-1">
-          <div className="flex flex-wrap gap-2">
-            {/* Handle phone numbers */}
-            {client.Phones
-              ? client.Phones.split(",").map((phone, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePhoneCall(phone.trim())}
-                    className="flex-grow sm:flex-grow-0"
-                  >
-                    <Phone className="mr-2 h-4 w-4" />
-                    {phone.trim()}
-                  </Button>
-                ))
-              : null}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSendEmail}
-              className="flex-grow sm:flex-grow-0"
-            >
-              <Mail className="mr-2 h-4 w-4" />
-              Send Email
-            </Button>
-          </div>
+          {email && (
+            <div className="flex items-center gap-2">
+              <Mail className="h-4 w-4 text-gray-400" />
+              <Link href={`mailto:${email}`} className="hover:underline">
+                {email}
+              </Link>
+            </div>
+          )}
+          {address && (
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-gray-400" />
+              <span>{address}</span>
+            </div>
+          )}
         </div>
-      </CardContent>
-    </Card>
+        <div className="space-y-2 mt-auto">
+          <Link
+            href={`tel:${phone}`}
+            className="flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <Phone className="mr-2 h-4 w-4" />
+            Call
+          </Link>
+          {website && (
+            <Link
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              <Globe className="mr-2 h-4 w-4" />
+              Visit Website
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
