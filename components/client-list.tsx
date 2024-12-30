@@ -4,6 +4,7 @@ import { ClientCard } from "@/components/client-card";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { apiUrl } from "@/apis/api";
 
 interface Client {
   id: string;
@@ -26,9 +27,7 @@ export default function ClientsPage() {
   async function fetchClients() {
     try {
       setIsLoading(true);
-      const response = await axios.get<Client[]>(
-        "http://localhost:3300/api/get/clients"
-      );
+      const response = await axios.get<Client[]>(`${apiUrl}/api/get/clients`);
       setClients(response.data);
       setError(null);
     } catch (err) {
