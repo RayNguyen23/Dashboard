@@ -20,14 +20,19 @@ interface Client {
 }
 
 export default function ClientsPage() {
-  const [clients, setClients] = useState<Client[]>([]);
+  const [Clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   async function fetchClients() {
     try {
       setIsLoading(true);
-      const response = await axios.get<Client[]>(`${apiUrl}/api/get/clients`);
+      const response = await axios.get<Client[]>(`${apiUrl}/api/get/clients`, {
+        headers: {
+          "ngrok-skip-browser-warning": "true", // Add the custom header
+        },
+      });
+
       setClients(response.data);
       setError(null);
     } catch (err) {
@@ -63,13 +68,13 @@ export default function ClientsPage() {
   return (
     <div className="container py-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {clients.map((client) => (
+        {Clients.map((client) => (
           <ClientCard
             key={client.id}
             name={client.Name}
             categories={
               client.Categories
-                ? client.Categories.split(",").map((c) => c.trim())
+                ? client.Categories.split(", ").map((c) => c.trim())
                 : []
             }
             phone={client.Phones || ""}
