@@ -1,7 +1,20 @@
-"use client"
+"use client";
 
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const data = [
   { month: "Jan", revenue: 4000 },
@@ -16,7 +29,7 @@ const data = [
   { month: "Oct", revenue: 7500 },
   { month: "Nov", revenue: 9000 },
   { month: "Dec", revenue: 10000 },
-]
+];
 
 export function RevenueChart() {
   return (
@@ -28,9 +41,12 @@ export function RevenueChart() {
       <CardContent>
         <div className="aspect-[4/3] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-              <XAxis 
-                dataKey="month" 
+            <LineChart
+              data={data}
+              margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
+            >
+              <XAxis
+                dataKey="month"
                 stroke="#888888"
                 fontSize={12}
                 tickLine={false}
@@ -45,13 +61,20 @@ export function RevenueChart() {
                 tickFormatter={(value) => `$${value / 1000}k`}
               />
               <Tooltip
-                contentStyle={{ background: "'hsl(var(--card))'", border: "'1px solid hsl(var(--border))'", borderRadius: "'var(--radius)'" }}
-                labelStyle={{ fontWeight: "'bold'", color: "'hsl(var(--foreground))'" }}
+                contentStyle={{
+                  background: "'hsl(var(--card))'",
+                  border: "'1px solid hsl(var(--border))'",
+                  borderRadius: "'var(--radius)'",
+                }}
+                labelStyle={{
+                  fontWeight: "'bold'",
+                  color: "'hsl(var(--foreground))'",
+                }}
               />
               <Line
                 type="monotone"
                 dataKey="revenue"
-                stroke="hsl(var(--primary))"
+                stroke="#000000"
                 strokeWidth={2}
                 dot={false}
               />
@@ -60,6 +83,5 @@ export function RevenueChart() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-
