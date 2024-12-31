@@ -17,7 +17,7 @@ export default function ClientsPage() {
 
   async function fetchClients() {
     try {
-      const response = await axios.get<Client[]>(`${apiUrl}/api/get/clients`, {
+      const response = await axios.get<Client[]>(`${apiUrl}/api/get/leads`, {
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
