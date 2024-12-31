@@ -1,8 +1,9 @@
-import { Clock, Globe, Mail, MapPin, Phone, Star } from "lucide-react";
-import Link from "next/link";
+import { Clock, Globe, Mail, MapPin, Phone, Star, Trash2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface ClientCardProps {
+  id: string;
   name: string;
   categories: string[];
   phone: string;
@@ -12,9 +13,11 @@ interface ClientCardProps {
   website?: string;
   address?: string;
   image?: string;
+  onRemove: (id: string) => void;
 }
 
-export function ClientCard({
+export default function ClientCard({
+  id,
   name,
   categories,
   phone,
@@ -24,6 +27,7 @@ export function ClientCard({
   website,
   address,
   image,
+  onRemove,
 }: ClientCardProps) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md h-full">
@@ -45,18 +49,25 @@ export function ClientCard({
         )}
       </div>
       <div className="flex flex-col flex-grow p-4 space-y-4">
-        <div>
+        <div className="flex justify-between items-start">
           <h3 className="text-lg font-semibold">{name}</h3>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <span
-                key={category}
-                className="inline-block rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
-              >
-                {category}
-              </span>
-            ))}
-          </div>
+          <button
+            onClick={() => onRemove(id)}
+            className="text-red-500 hover:text-red-700 transition-colors"
+            aria-label="Remove client"
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <span
+              key={category}
+              className="inline-block rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+            >
+              {category}
+            </span>
+          ))}
         </div>
         <hr className="border-gray-200" />
         <div className="space-y-2 text-sm flex-grow">
@@ -64,18 +75,17 @@ export function ClientCard({
             <Clock className="h-4 w-4 text-gray-400" />
             <span>{timeZone}</span>
           </div>
-          {phone.split(", ").map((elm) => {
-            if (elm !== "") {
-              return (
-                <div key={elm} className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-gray-400" />
-                  <Link href={`tel:${elm}`} className="hover:underline">
-                    {elm}
-                  </Link>
-                </div>
-              );
-            }
-          })}
+          {(() => {
+            const lastPhone = phone.split(", ").at(-1)?.trim(); // Get the last phone number and trim whitespace
+            return lastPhone ? (
+              <div key={lastPhone} className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-gray-400" />
+                <Link href={`tel:${lastPhone}`} className="hover:underline">
+                  {lastPhone}
+                </Link>
+              </div>
+            ) : null;
+          })()}
 
           {email && (
             <div className="flex items-center gap-2">
@@ -100,7 +110,7 @@ export function ClientCard({
             <Phone className="mr-2 h-4 w-4" />
             Call
           </Link>
-          {website && (
+          {website ? (
             <Link
               href={website}
               target="_blank"
@@ -110,6 +120,11 @@ export function ClientCard({
               <Globe className="mr-2 h-4 w-4" />
               Visit Website
             </Link>
+          ) : (
+            <div className="flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white">
+              <Globe className="mr-2 h-4 w-4" />
+              Missing
+            </div>
           )}
         </div>
       </div>
