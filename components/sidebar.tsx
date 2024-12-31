@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Users, Settings, X } from "lucide-react";
+import {
+  Home,
+  Users,
+  Settings,
+  X,
+  Briefcase,
+  DollarSign,
+  UserPlus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SidebarProps {
@@ -47,6 +55,42 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               >
                 <Home className="mr-2 h-5 w-5" />
                 Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/dashboard/projects"
+                className={`flex items-center rounded-md p-2 ${isActive(
+                  "/dashboard/projects"
+                )}`}
+                onClick={onClose}
+              >
+                <Briefcase className="mr-2 h-5 w-5" />
+                Projects
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/dashboard/finance"
+                className={`flex items-center rounded-md p-2 ${isActive(
+                  "/dashboard/finance"
+                )}`}
+                onClick={onClose}
+              >
+                <DollarSign className="mr-2 h-5 w-5" />
+                Finance
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/dashboard/leads"
+                className={`flex items-center rounded-md p-2 ${isActive(
+                  "/dashboard/leads"
+                )}`}
+                onClick={onClose}
+              >
+                <UserPlus className="mr-2 h-5 w-5" />
+                Leads
               </Link>
             </li>
             <li>
