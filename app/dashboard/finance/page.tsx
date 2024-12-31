@@ -115,6 +115,27 @@ export default function FinancePage() {
     setRecentTransactions(response.data);
   }
 
+  // Add this function after the GetTransaction function
+  async function removeTransaction(financeId: string) {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/api/delete/transaction`,
+        { id: financeId },
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        }
+      );
+      // Refresh the transactions list
+      await GetTransaction();
+      alert(response.data);
+    } catch (error) {
+      console.error("Error removing transaction:", error);
+      alert("Error removing transaction. Please try again.");
+    }
+  }
+
   useEffect(() => {
     GetTransaction();
   }, []);
@@ -218,6 +239,7 @@ export default function FinancePage() {
               <TableHead>Description</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Type</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -234,6 +256,15 @@ export default function FinancePage() {
                   ${Math.abs(parseInt(transaction.amount)).toLocaleString()}
                 </TableCell>
                 <TableCell>{transaction.type}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => removeTransaction(transaction.finance_id)}
+                  >
+                    Remove
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
