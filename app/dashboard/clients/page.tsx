@@ -11,7 +11,25 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { Trash2 } from "lucide-react";
+import {
+  Trash2,
+  Plus,
+  Briefcase,
+  DollarSign,
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  FileText,
+  Edit,
+} from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { AddClientForm } from "@/components/add-client-form";
 
 interface Client {
   id: number;
@@ -97,22 +115,50 @@ const initialClients: Client[] = [
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>(initialClients);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const removeClient = (id: number) => {
     setClients(clients.filter((client) => client.id !== id));
   };
 
+  const addClient = (newClient: Omit<Client, "id">) => {
+    const id = Math.max(...clients.map((c) => c.id)) + 1;
+    setClients([...clients, { ...newClient, id }]);
+    setShowAddForm(false);
+  };
+
   return (
-    <div className="container mx-auto p-4 space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Clients</h1>
-        <Button>Add New Client</Button>
+    <div className="min-h-screen bg-white relative">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
+            Client Management
+          </h1>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-6">
+          {clients.map((client) => (
+            <ClientCard
+              key={client.id}
+              client={client}
+              onRemove={removeClient}
+            />
+          ))}
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {clients.map((client) => (
-          <ClientCard key={client.id} client={client} onRemove={removeClient} />
-        ))}
-      </div>
+      <Button
+        className="fixed bottom-8 right-8 bg-black hover:bg-gray-800 text-white transition-colors duration-300 rounded-full shadow-lg"
+        onClick={() => setShowAddForm(true)}
+      >
+        <Plus className="mr-2 h-4 w-4" /> Add New Client
+      </Button>
+      {showAddForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <AddClientForm
+            onAdd={addClient}
+            onCancel={() => setShowAddForm(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -124,67 +170,107 @@ function ClientCard({
   client: Client;
   onRemove: (id: number) => void;
 }) {
+  const statusColors = {
+    Active: "bg-green-100 hover:bg-green-200 text-green-800",
+    Inactive: "bg-red-100 hover:bg-red-200 text-red-800",
+    Pending: "bg-yellow-100 hover:bg-yellow-200 text-yellow-800",
+  };
+
   return (
-    <Card className="w-full">
-      <CardHeader className="flex flex-row justify-between items-center">
-        <CardTitle>{client.name}</CardTitle>
-        <Badge
-          variant={
-            client.status === "Active"
-              ? "success"
-              : client.status === "Inactive"
-              ? "destructive"
-              : "warning"
-          }
-        >
-          {client.status}
-        </Badge>
+    <Card className="w-full overflow-hidden transition-all duration-300 shadow-md hover:shadow-xl bg-white relative pb-16">
+      <CardHeader className="bg-blue-600 p-4">
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-xl font-bold text-white">
+            {client.name}
+          </CardTitle>
+          <Badge
+            className={`${
+              statusColors[client.status]
+            } text-xs font-semibold px-2 py-1 rounded-full transition-colors duration-200`}
+          >
+            {client.status}
+          </Badge>
+        </div>
       </CardHeader>
-      <CardContent>
-        <dl className="space-y-2 text-sm">
-          <div>
-            <dt className="font-semibold">Industry:</dt>
-            <dd>{client.industry}</dd>
+      <CardContent className="p-4">
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <InfoItem icon={Briefcase} label="Industry" value={client.industry} />
+          <InfoItem
+            icon={DollarSign}
+            label="Projects"
+            value={client.activeProjects.toString()}
+          />
+          <InfoItem
+            icon={DollarSign}
+            label="Revenue"
+            value={`$${client.totalRevenue.toLocaleString()}`}
+          />
+          <InfoItem
+            icon={Calendar}
+            label="Start Date"
+            value={format(client.startDate, "MM/dd/yyyy")}
+          />
+        </div>
+        <div className="mt-4">
+          <h3 className="text-sm text-blue-500 font-medium text-gray-700 mb-2">
+            Contact Details
+          </h3>
+          <div className="space-y-2">
+            <InfoItem icon={User} label="Contact" value={client.contactName} />
+            <InfoItem icon={Mail} label="Email" value={client.email} />
+            <InfoItem icon={Phone} label="Phone" value={client.phone} />
           </div>
-          <div>
-            <dt className="font-semibold">Active Projects:</dt>
-            <dd>{client.activeProjects}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Total Revenue:</dt>
-            <dd>${client.totalRevenue.toLocaleString()}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Contact:</dt>
-            <dd>{client.contactName}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Email:</dt>
-            <dd>{client.email}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Phone:</dt>
-            <dd>{client.phone}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Start Date:</dt>
-            <dd>{format(client.startDate, "MM/dd/yyyy")}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold">Notes:</dt>
-            <dd>{client.notes}</dd>
-          </div>
-        </dl>
+        </div>
       </CardContent>
-      <CardFooter>
-        <Button
-          variant="destructive"
-          onClick={() => onRemove(client.id)}
-          className="w-full"
-        >
-          <Trash2 className="mr-2 h-4 w-4" /> Remove Client
-        </Button>
+      <CardFooter className="bg-gray-50 p-4 flex flex-col gap-2">
+        <div className="w-full">
+          <InfoItem icon={FileText} label="Notes" value={client.notes} />
+        </div>
       </CardFooter>
+      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gray-50">
+        <div className="flex justify-between items-center">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" className="w-10 h-10">
+                  <Edit className="h-4 w-4" />
+                  <span className="sr-only">Edit Client</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Edit Client</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <Button
+            variant="destructive"
+            onClick={() => onRemove(client.id)}
+            className="bg-red-500 hover:bg-red-600 text-white transition-colors duration-300"
+          >
+            <Trash2 className="mr-2 h-4 w-4" /> Remove Client
+          </Button>
+        </div>
+      </div>
     </Card>
+  );
+}
+
+function InfoItem({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-center text-sm">
+      <Icon className="h-4 w-4 mr-2 text-gray-500 flex-shrink-0" />
+      <div className="flex-grow">
+        <span className="font-medium text-gray-700">{label}:</span>
+        <span className="ml-1 text-gray-600 break-words">{value}</span>
+      </div>
+    </div>
   );
 }

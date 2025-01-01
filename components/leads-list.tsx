@@ -5,7 +5,7 @@ import axios from "axios";
 import { Search } from "lucide-react";
 import { apiUrl } from "@/apis/api";
 import ClientCard from "@/components/client-card";
-import { Client } from "@/interface/client";
+import { Client } from "@/interface/leads";
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
