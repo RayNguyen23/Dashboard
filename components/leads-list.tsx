@@ -5,11 +5,11 @@ import axios from "axios";
 import { Search } from "lucide-react";
 import { apiUrl } from "@/apis/api";
 import ClientCard from "@/components/client-card";
-import { Client } from "@/interface/leads";
+import { Leads } from "@/interface/leads";
 
 export default function ClientsPage() {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [filteredClients, setFilteredClients] = useState<Client[]>([]);
+  const [clients, setClients] = useState<Leads[]>([]);
+  const [filteredClients, setFilteredClients] = useState<Leads[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +17,7 @@ export default function ClientsPage() {
 
   async function fetchClients() {
     try {
-      const response = await axios.get<Client[]>(`${apiUrl}/api/get/leads`, {
+      const response = await axios.get<Leads[]>(`${apiUrl}/api/get/leads`, {
         headers: {
           "ngrok-skip-browser-warning": "true",
         },

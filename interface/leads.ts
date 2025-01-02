@@ -1,4 +1,4 @@
-export interface Client {
+export interface Leads {
   id: string;
   Name: string;
   Categories: string | null;

@@ -27,20 +27,7 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
-
-interface Client {
-  id: number;
-  name: string;
-  industry: string;
-  status: "Active" | "Inactive" | "Pending";
-  activeProjects: number;
-  totalRevenue: number;
-  contactName: string;
-  email: string;
-  phone: string;
-  startDate: Date;
-  notes: string;
-}
+import { Client } from "@/interface/clients";
 
 interface AddClientFormProps {
   onAdd: (client: Omit<Client, "id">) => void;
@@ -48,16 +35,16 @@ interface AddClientFormProps {
 }
 
 export function AddClientForm({ onAdd, onCancel }: AddClientFormProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Omit<Client, "id">>({
     name: "",
     industry: "",
-    status: "Active" as "Active" | "Inactive" | "Pending",
-    activeProjects: 0,
-    totalRevenue: 0,
-    contactName: "",
+    status: "Active",
+    active_projects: "",
+    total_revenue: "",
+    contact_name: "",
     email: "",
     phone: "",
-    startDate: new Date().toISOString().split("T")[0],
+    start_date: new Date().toISOString().split("T")[0],
     notes: "",
   });
 
@@ -74,12 +61,7 @@ export function AddClientForm({ onAdd, onCancel }: AddClientFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAdd({
-      ...formData,
-      activeProjects: Number(formData.activeProjects),
-      totalRevenue: Number(formData.totalRevenue),
-      startDate: new Date(formData.startDate),
-    });
+    onAdd(formData);
   };
 
   return (
@@ -171,23 +153,23 @@ export function AddClientForm({ onAdd, onCancel }: AddClientFormProps) {
                   </div>
                   <div className="space-y-2">
                     <Label
-                      htmlFor="activeProjects"
+                      htmlFor="active_projects"
                       className="text-sm font-medium text-gray-700"
                     >
                       Active Projects
                     </Label>
                     <Input
-                      id="activeProjects"
-                      name="activeProjects"
+                      id="active_projects"
+                      name="active_projects"
                       type="number"
-                      value={formData.activeProjects}
+                      value={formData.active_projects}
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="space-y-2">
                     <Label
-                      htmlFor="totalRevenue"
+                      htmlFor="total_revenue"
                       className="text-sm font-medium text-gray-700"
                     >
                       Total Revenue
@@ -198,11 +180,18 @@ export function AddClientForm({ onAdd, onCancel }: AddClientFormProps) {
                         size={18}
                       />
                       <Input
-                        id="totalRevenue"
-                        name="totalRevenue"
-                        type="number"
-                        value={formData.totalRevenue}
-                        onChange={handleChange}
+                        id="total_revenue"
+                        name="total_revenue"
+                        type="text"
+                        value={formData.total_revenue}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          setFormData((prev) => ({
+                            ...prev,
+                            total_revenue: value,
+                          }));
+                        }}
+                        placeholder="Enter amount"
                         required
                         className="pl-10"
                       />
@@ -212,7 +201,7 @@ export function AddClientForm({ onAdd, onCancel }: AddClientFormProps) {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label
-                      htmlFor="contactName"
+                      htmlFor="contact_name"
                       className="text-sm font-medium text-gray-700"
                     >
                       Contact Name
@@ -223,9 +212,9 @@ export function AddClientForm({ onAdd, onCancel }: AddClientFormProps) {
                         size={18}
                       />
                       <Input
-                        id="contactName"
-                        name="contactName"
-                        value={formData.contactName}
+                        id="contact_name"
+                        name="contact_name"
+                        value={formData.contact_name}
                         onChange={handleChange}
                         required
                         className="pl-10"
@@ -279,7 +268,7 @@ export function AddClientForm({ onAdd, onCancel }: AddClientFormProps) {
                   </div>
                   <div className="space-y-2">
                     <Label
-                      htmlFor="startDate"
+                      htmlFor="start_date"
                       className="text-sm font-medium text-gray-700"
                     >
                       Start Date
@@ -290,10 +279,10 @@ export function AddClientForm({ onAdd, onCancel }: AddClientFormProps) {
                         size={18}
                       />
                       <Input
-                        id="startDate"
-                        name="startDate"
+                        id="start_date"
+                        name="start_date"
                         type="date"
-                        value={formData.startDate}
+                        value={formData.start_date}
                         onChange={handleChange}
                         required
                         className="pl-10"
